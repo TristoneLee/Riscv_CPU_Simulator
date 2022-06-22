@@ -2,7 +2,7 @@
 
 void cpu::run(){
     try{
-        insqueue.push();
+        insQueue.push();
         Instruction curIns=insQueue.pop();
 
     }
