@@ -1,7 +1,6 @@
 #ifndef RISCVCPUSIMULATOR_DECODER_H
 #define RISCVCPUSIMULATOR_DECODER_H
 
-#include <unordered_map>
 
 //Register, Immediate, Save, Branch, Upper Immediate, Jump
 enum InsType {
@@ -32,13 +31,13 @@ struct baseIns {
 
     baseIns() = default;
 
-    baseIns(uint32_t sourse) : ins(sourse) {
+    baseIns(uint32_t source) : ins(source) {
         opcode = ins & 127u;
         rd = (ins >> 7) & 31u;
         funct3 = (ins >> 12) & 7u;
-        rs1 = (ins >>15) & 31u;
-        rs2 = (ins >>18) & 31u;
-        funct7 = (ins>>25) & 127u;
+        rs1 = (ins >> 15) & 31u;
+        rs2 = (ins >> 18) & 31u;
+        funct7 = (ins >> 25) & 127u;
         type = typeSelect();
     }
 };
@@ -83,21 +82,24 @@ enum InsName {
     AND
 };
 
-class Instruction {
+class UOP {
+    friend class cpu;
+    friend class ReorderBuffer;
+
+
     InsType type;
     InsName name;
-    uint32_t ins;
-    uint8_t opcode = 0;
     uint8_t rd = 0;
     uint8_t rs1 = 0;
-    uint8_t funct3 = 0;
     uint8_t rs2 = 0;
-    uint8_t funct7 = 0;
-    uint32_t imm = 0;
+    uint32_t  imm= 0;
+    int PC=0;
+    int RoB_pr=0;
+    int LSU_pr=0;
 
 public:
-    Instruction(baseIns base) : opcode(base.opcode), funct3(base.funct3), funct7(base.funct7), rd(base.rd),
-                                rs1(base.rs1), rs2(base.rs2), type(base.type),ins(base.ins) {
+    UOP(baseIns base) : rd(base.rd), rs1(base.rs1), rs2(base.rs2), type(base.type) {
+        uint8_t funct7 = base.funct7, funct3 = base.funct3, opcode = base.opcode;
         if (type == R) {
             if (funct7 == 0 && funct3 == 7) name = AND;
             else if (funct7 == 0 && funct3 == 6) name = OR;
@@ -143,16 +145,15 @@ public:
             else if (funct3 == 5) name = BGE;
             else if (funct3 == 6) name = BLTU;
             else if (funct3 == 7) name = BGEU;
-            imm=1;
-        }else if(type==U){
-            if(opcode==55) name=LUI;
-            else if(opcode==23) name=AUIPC;
-            imm=1;
-        }
-        else if(type==J){
-            if(opcode==111) name=JAL;
-            else if(opcode==103) name=JALR;
-            imm=1;
+            imm = 1;
+        } else if (type == U) {
+            if (opcode == 55) name = LUI;
+            else if (opcode == 23) name = AUIPC;
+            imm = 1;
+        } else if (type == J) {
+            if (opcode == 111) name = JAL;
+            else if (opcode == 103) name = JALR;
+            imm = 1;
         }
     }
 };

@@ -20,13 +20,12 @@ public:
     void write(uint8_t loc, int len,uint8_t *data){
     }
 
-    void read(uint8_t loc, int len, uint8_t *des){
-        for(int i=0;i<len;++i) des[i]=mem[loc+len-i-1];
-    }
-
-    uint8_t *read(uint32_t loc, int len){
-        uint8_t des[len];
-        for(int i=0;i<len;++i) des[i]=mem[loc+len-i-1];
+    uint32_t read(uint32_t loc, int len){
+        uint32_t ans=mem[loc+len-1];
+        for(int i=len-2;i>=0;--i){
+            ans<<8;
+            ans+=mem[loc+i];
+        }
     }
 
     uint32_t readIns(uint32_t loc){

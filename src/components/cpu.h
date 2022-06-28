@@ -3,18 +3,31 @@
 
 #include "Memory.h"
 #include "Clock.h"
-#include "InstructionQueue.h"
+#include "Register.h"
+#include "tools.h"
+#include "FetchBuffer.h"
+#include "LoadStoreUnit.h"
+#include "ReorderBuffer.h"
 
 class cpu {
     Memory Mem;
-    uint32_t Register[32];
+    Registers Reg;
     uint32_t PC;
-    InsQueue insQueue;
+    FetchBuffer FTB;
+    LoadStoreUnit LSU;
+    ReorderBuffer RoB;
 
-public:
     void run();
+    void Fetch();
+    void DecodeRenameDispatch();
+    void Dispatch(UOP uop);
+    void Issue();
+    void Execute();
+    void Commit();
+    void Fire();
+    void RegisterRead();
+public:
 
-    void execute(Instruction curIns);
 };
 
 
