@@ -50,8 +50,8 @@ void cpu::run() {
     int cycle = 0;
     while (true) {
         try {
-            cerr << "PC" << hex << PC_ << "  ";
-            Reg_.Print();
+//            cerr << "PC" << hex << PC_ << "  ";
+//            Reg_.Print();
             Fetch();
             DecodeRenameDispatch();
             Issue();
