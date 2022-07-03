@@ -1,11 +1,10 @@
-#ifndef RISCVCPUSIMULATOR_TOOLS_H
-#define RISCVCPUSIMULATOR_TOOLS_H
+#ifndef RISCVCPUSIMULATOR_TOOLS_HPP
+#define RISCVCPUSIMULATOR_TOOLS_HPP
 
-const uint32_t INF = 0xFFFFFFFFF;
 
-uint32_t sext(uint32_t num, int bit) {
-    if (num >> (bit - 1) == 0) {
-        return num | (INF << bit);
+int sext(int num, int bit) {
+    if (num >> (bit - 1) == 1) {
+        return num ^ (-1 << bit);
     } else return num;
 }
 
@@ -44,7 +43,7 @@ public:
 
         T operator*() { return master->queue[pos]; }
 
-        bool &operator==(const iterator &rhs) { return pos == rhs.pos; }
+        bool operator==(const iterator &rhs) { return pos == rhs.pos; }
     };
 
     CircularQueue() = default;
@@ -53,9 +52,9 @@ public:
 
     int push(const T &obj) {
         queue[tail] = obj;
-        int ans = obj;
+        int ans = tail;
         tail = (tail + 1) % size, ++count;
-        return obj;
+        return ans;
     }
 
     T front() { return queue[head]; }
@@ -70,6 +69,8 @@ public:
 
     iterator end() { return iterator(tail, this); }
 
+    void clear() {count=head=tail=0;}
+
 };
 
-#endif //RISCVCPUSIMULATOR_TOOLS_H
+#endif //RISCVCPUSIMULATOR_TOOLS_HPP
