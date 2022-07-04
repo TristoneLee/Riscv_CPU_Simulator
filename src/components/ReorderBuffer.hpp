@@ -94,7 +94,7 @@ public:
                 throw "PC_reset";
             } else registers_->Reflush();
         } else if (uop.name == BLTU) {
-            if ((unsigned) registers_->Read(uop.rs1) <= (unsigned) registers_->Read(uop.rs2)) {
+            if ((unsigned) registers_->Read(uop.rs1) < (unsigned) registers_->Read(uop.rs2)) {
                 *PC_ = uop.PC + uop.imm;
                 registers_->Pop();
                 throw "PC_reset";
