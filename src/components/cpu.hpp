@@ -47,12 +47,12 @@ public:
 };
 
 void cpu::run() {
-    int cycle = 0;
+//    int cycle = 0;
     while (true) {
-        ++cycle;
-        clog << "\n cycle:" << oct << cycle;
-        clog << "   PC" << hex << PC_ << "  \n";
-        Reg_.Print();
+//        ++cycle;
+//        clog << "\n cycle:" << oct << cycle;
+//        clog << "   PC" << hex << PC_ << "  \n";
+//        Reg_.Print();
         try {
             Fetch();
             DecodeRenameDispatch();
@@ -69,7 +69,7 @@ void cpu::run() {
 void cpu::Fetch() {
     BaseIns base(Mem_.readIns(PC_));
     UOP uop(base);
-    uop.PrintUOP();
+//    uop.PrintUOP();
     uop.PC = PC_;
     if (uop.name == JAL) PC_ += uop.imm;
     else { PC_ += 4; }
