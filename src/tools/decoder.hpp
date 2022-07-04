@@ -74,17 +74,17 @@ public:
         if (type == R) {
             if (funct7 == 0 && funct3 == 7) name = AND;
             else if (funct7 == 0 && funct3 == 6) name = OR;
-            else if (funct7 == 32 && funct3 == 5)name = SRA;
-            else if (funct7 == 0 && funct3 == 5)name = SRL;
+            else if (opcode == 51 && funct7 == 32 && funct3 == 5)name = SRA;
+            else if (opcode == 51 && funct7 == 0 && funct3 == 5)name = SRL;
             else if (funct7 == 0 && funct3 == 4) name = XOR;
             else if (funct7 == 0 && funct3 == 3) name = SLTU;
             else if (funct7 == 0 && funct3 == 2) name = SLT;
-            else if (funct7 == 0 && funct3 == 1) name = SLL;
+            else if (opcode == 51 && funct7 == 0 && funct3 == 1) name = SLL;
             else if (funct7 == 32 && funct3 == 0) name = SUB;
             else if (funct7 == 0 && funct3 == 0) name = ADD;
-            else if (funct7 == 32 && funct3 == 5) name = SRAI;
-            else if (funct7 == 0 && funct3 == 5) name = SRLI;
-            else if (funct7 == 0 && funct3 == 1) name = SLLI;
+            else if (opcode == 19 && funct7 == 32 && funct3 == 5) name = SRAI;
+            else if (opcode == 19 && funct7 == 0 && funct3 == 5) name = SRLI;
+            else if (opcode == 19 && funct7 == 0 && funct3 == 1) name = SLLI;
         } else if (type == I) {
             if (opcode == 19) {
                 if (funct3 == 7) name = ANDI;
@@ -131,11 +131,149 @@ public:
         } else if (type == J) {
             if (opcode == 111) {
                 name = JAL;
+                if (rd == 0) rd = 1;
                 imm = (funct3 << 12) + (rs1 << 15) + ((rs2 >> 1) << 1) + ((rs2 & 1u) << 11) + ((funct7 & 63) << 5) +
                       ((funct7 & 64u) << 14);
             }
             imm = sext(imm, 21);
         }
+    }
+
+    void PrintUOP() {
+        clog << "inst [";
+        switch (type) {
+            case R:
+                clog << "R]";
+                break;
+            case I:
+                clog << "I]";
+                break;
+            case S:
+                clog << "S]";
+                break;
+            case U:
+                clog << "U]";
+                break;
+            case B:
+                clog << "B]";
+                break;
+            default :
+                clog << "J]";
+        }
+        switch (name) {
+            case LUI:
+                clog << "LUI";
+                break;
+            case AUIPC:
+                clog << "AUIPC";
+                break;
+            case JAL:
+                clog << "JAL";
+                break;
+            case BEQ:
+                clog << "BEQ";
+                break;
+            case BNE:
+                clog << "BNE";
+                break;
+            case BLT:
+                clog << "BLT";
+                break;
+            case BGE:
+                clog << "BGE";
+                break;
+            case BLTU:
+                clog << "BLTU";
+                break;
+            case BGEU:
+                clog << "BGEU";
+                break;
+            case LB:
+                clog << "LB";
+                break;
+            case LH:
+                clog << "LH";
+                break;
+            case LW:
+                clog << "LW";
+                break;
+            case LBU:
+                clog << "LBU";
+                break;
+            case LHU:
+                clog << "LHU";
+                break;
+            case SB:
+                clog << "SB";
+                break;
+            case SH:
+                clog << "SH";
+                break;
+            case SW:
+                clog << "SW";
+                break;
+            case ADDI:
+                clog << "ADDI";
+                break;
+            case SLTI:
+                clog << "SLTI";
+                break;
+            case SLTIU:
+                clog << "SLTIU";
+                break;
+            case XORI:
+                clog << "XORI";
+                break;
+            case ORI:
+                clog << "ORI";
+                break;
+            case ANDI:
+                clog << "ANDI";
+                break;
+            case SLLI:
+                clog << "SLLI";
+                break;
+            case SRLI:
+                clog << "SRLI";
+                break;
+            case SRAI:
+                clog << "SRAI";
+                break;
+            case ADD:
+                clog << "ADD";
+                break;
+            case SUB:
+                clog << "SUB";
+                break;
+            case SLL:
+                clog << "SLL";
+                break;
+            case SLT:
+                clog << "SLT";
+                break;
+            case SLTU:
+                clog << "SLTU";
+                break;
+            case XOR:
+                clog << "XOR";
+                break;
+            case SRL:
+                clog << "SRL";
+                break;
+            case OR:
+                clog << "OR";
+                break;
+            case AND:
+                clog << "AND";
+                break;
+            case RET:
+                clog << "RET";
+                break;
+            default:
+                clog << "END";
+                break;
+        }
+        clog << ", rs1: " << oct << rs1 << ", rs2: " << rs2 << ", imm: " << imm << ", rd: " << rd << "\n";
     }
 };
 

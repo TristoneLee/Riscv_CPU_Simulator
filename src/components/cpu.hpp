@@ -50,7 +50,9 @@ void cpu::run() {
     int cycle = 0;
     while (true) {
         try {
-//            cerr << "PC" << hex << PC_ << "  ";
+//            ++cycle;
+//            clog << "cycle:" << oct << cycle;
+//            clog << "   PC" << hex << PC_ << "  \n";
 //            Reg_.Print();
             Fetch();
             DecodeRenameDispatch();
@@ -67,7 +69,8 @@ void cpu::run() {
 void cpu::Fetch() {
     BaseIns base(Mem_.readIns(PC_));
     UOP uop(base);
-    uop.PC=PC_;
+//    uop.PrintUOP();
+    uop.PC = PC_;
     if (uop.name == JAL) PC_ += uop.imm;
     else { PC_ += 4; }
     fetch_buffer_.push(uop);
@@ -85,12 +88,12 @@ void cpu::DecodeRenameDispatch() {
         return;
     }
     //Rename
-    if (uop.type == B||uop.name==JALR) Reg_.Take_Shot();
-    if (uop.type == R || uop.type == S || uop.type == B) {
+    if (uop.type == B || uop.name == JALR) Reg_.Take_Shot();
+    if (uop.type == I || uop.name == SRLI || uop.name == SLLI || uop.name == SRAI) {
+        uop.rs1 = Reg_.ReserveL(uop.rs1);
+    } else if (uop.type == R || uop.type == S || uop.type == B) {
         uop.rs1 = Reg_.ReserveL(uop.rs1);
         uop.rs2 = Reg_.ReserveL(uop.rs2);
-    } else if (uop.type == I) {
-        uop.rs1 = Reg_.ReserveL(uop.rs1);
     }
     if (uop.type != B && uop.type != S) {
         uop.rd = Reg_.ReserveS(uop.rd);
@@ -149,14 +152,14 @@ void cpu::Issue() {
                     functional_unit_.Push(Reg_.Read(cur_issue.Q1_), cur_issue.A_, And, cur_issue.RoB_pr);
                     break;
                 case SLL:
-                    functional_unit_.Push(Reg_.Read(cur_issue.Q1_), Reg_.Read(cur_issue.Q2_) & (~(-1 << 5)), Shift_Left,
+                    functional_unit_.Push(Reg_.Read(cur_issue.Q1_), Reg_.Read(cur_issue.Q2_) & 31u, Shift_Left,
                                           cur_issue.RoB_pr);
                     break;
                 case SLLI:
                     functional_unit_.Push(Reg_.Read(cur_issue.Q1_), cur_issue.A_, Shift_Left, cur_issue.RoB_pr);
                     break;
                 case SRL:
-                    functional_unit_.Push(Reg_.Read(cur_issue.Q1_), Reg_.Read(cur_issue.Q2_) & (~(-1 << 5)),
+                    functional_unit_.Push(Reg_.Read(cur_issue.Q1_), Reg_.Read(cur_issue.Q2_) & (31u),
                                           Shift_Right_Logical,
                                           cur_issue.RoB_pr);
                     break;
@@ -165,7 +168,7 @@ void cpu::Issue() {
                                           cur_issue.RoB_pr);
                     break;
                 case SRA:
-                    functional_unit_.Push(Reg_.Read(cur_issue.Q1_), Reg_.Read(cur_issue.Q2_) & (~(-1 << 5)),
+                    functional_unit_.Push(Reg_.Read(cur_issue.Q1_), Reg_.Read(cur_issue.Q2_) & (31u),
                                           Shift_Right_Arithmetic, cur_issue.RoB_pr);
                     break;
                 case SRAI:

@@ -33,8 +33,8 @@ private:
             else if (operation_type_ == Or) return input1_ | input2_;
             else if (operation_type_ == Xor)return input1_ ^ input2_;
             else if (operation_type_ == Shift_Left) return input1_ << input2_;
-            else if (operation_type_ == Shift_Right_Logical) return input1_ >> input2_;
-            else if (operation_type_ == Shift_Right_Arithmetic) return (unsigned) input1_ << input2_;
+            else if (operation_type_ == Shift_Right_Logical) return (unsigned)input1_ >> input2_;
+            else if (operation_type_ == Shift_Right_Arithmetic) return input1_ << input2_;
             else if (operation_type_ == Less_Than_Unsigned) return (unsigned) input1_ < (unsigned) input2_;
             else return input1_ < input2_;
         }

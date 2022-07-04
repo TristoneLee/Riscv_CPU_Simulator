@@ -86,8 +86,8 @@ public:
     }
 
     void Print() {
-        for (int i = 0; i < 32; ++i) cerr << (unsigned) regs_[register_snapshots.front().rename_map_table_[i]] << " ";
-        cerr << endl;
+        for (int i = 10; i < 11; ++i) clog << (unsigned) regs_[register_snapshots.front().rename_map_table_[i]] << " ";
+        clog << "\n";
     }
 
     void Take_Shot() {

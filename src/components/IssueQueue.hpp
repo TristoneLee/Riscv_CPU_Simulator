@@ -30,7 +30,11 @@ private:
         IssueUnit() = default;
 
         IssueUnit(UOP uop) : name_(uop.name) {
-            if (uop.type == R || uop.type == B) {
+            if(uop.name==SLLI||uop.name==SRLI||uop.name==SRAI){
+                Q1_ = uop.rs1;
+                A_=uop.rs2;
+            }
+            else if (uop.type == R || uop.type == B) {
                 Q1_ = uop.rs1, Q2_ = uop.rs2;
             } else if (uop.type == I || uop.name == JALR) {
                 Q1_ = uop.rs1, Q2_ = 0;
@@ -61,7 +65,12 @@ public:
                 break;
         }
         IssueUnit cur_issue(uop);
-        if (uop.type == R || uop.type == S || uop.type == B) {
+        if(uop.name==SLLI||uop.name==SRLI||uop.name==SRAI){
+            if ((cur_issue.R1_ =
+                         registers->register_snapshots.front().reg_status_[uop.rs1] == ready))
+                cur_issue.issue_status_ = issue_ready;
+        }
+        else if (uop.type == R || uop.type == S || uop.type == B) {
             cur_issue.R1_ = registers->register_snapshots.front().reg_status_[uop.rs1] == ready;
             cur_issue.R2_ = registers->register_snapshots.front().reg_status_[uop.rs2] == ready;
             if (cur_issue.R1_ && cur_issue.R2_) cur_issue.issue_status_ = issue_ready;
