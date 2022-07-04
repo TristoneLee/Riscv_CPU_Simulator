@@ -44,7 +44,7 @@ struct BaseIns {
 
 enum InsName {
     NONE, LUI, AUIPC, JAL, JALR, BEQ, BNE, BLT, BGE, BLTU, BGEU, LB, LH, LW, LBU, LHU, SB, SH, SW, ADDI, SLTI, SLTIU,
-    XORI, ORI, ANDI, SLLI, SRLI, SRAI, ADD, SUB, SLL, SLT, SLTU, XOR, SRL, SRA, OR, AND, RET, END
+    XORI, ORI, ANDI, SLLI, SRLI, SRAI, ADD, SUB, SLL, SLT, SLTU, XOR, SRL, SRA, OR, AND, END
 };
 
 class UOP {
@@ -99,14 +99,10 @@ public:
                 else if (funct3 == 2) name = LW;
                 else if (funct3 == 1) name = LH;
                 else if (funct3 == 0) name = LB;
-            } else if (opcode == 103)
-                if (rs1 == 1) {
-                    name = RET;
-                    return;
-                } else {
-                    name = JALR;
-                    if (rd == 0) rd = 1;
-                }
+            } else if (opcode == 103) {
+                name = JALR;
+                if (rd == 0) rd = 1;
+            }
             imm = sext(rs2 + (funct7 << 5), 12);
             if (imm == 255 & name == ADDI) name = END;
         } else if (type == S) {
@@ -266,14 +262,14 @@ public:
             case AND:
                 clog << "AND";
                 break;
-            case RET:
-                clog << "RET";
+            case JALR:
+                clog << "JALR";
                 break;
             default:
                 clog << "END";
                 break;
         }
-        clog << ", rs1: " << oct << rs1 << ", rs2: " << rs2 << ", imm: " << imm << ", rd: " << rd << "\n";
+        clog <<dec<< ", rs1: " << oct << rs1 << ", rs2: " << rs2 << ", imm: " << imm << ", rd: " << rd << "\n";
     }
 };
 

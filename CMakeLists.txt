@@ -10,5 +10,5 @@ include_directories(
 )
 set(src_dir
         ${PROJECT_SOURCE_DIR}/src/main/test.cpp
-        )
+        src/components/BranchPredict.hpp)
 add_executable(code ${src_dir})

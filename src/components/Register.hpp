@@ -86,7 +86,7 @@ public:
     }
 
     void Print() {
-        for (int i = 10; i < 11; ++i) clog << (unsigned) regs_[register_snapshots.front().rename_map_table_[i]] << " ";
+        for (int i = 0; i < 32; ++i) clog <<hex<< (unsigned) regs_[register_snapshots.front().rename_map_table_[i]] << " ";
         clog << "\n";
     }
 
